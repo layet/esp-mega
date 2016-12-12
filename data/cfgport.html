@@ -1,0 +1,128 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta charset='utf-8'>
+<title>ESP8266</title>
+<link rel='stylesheet' href='matmin.css'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0'/>
+<style>
+	select {
+	  background-color: #546e7a !important;
+	}
+</style>
+</head>
+<body>
+<div class='row'>
+<nav>
+  <div class='nav-wrapper'>
+    <div class='col s12'>
+        <a href='/' class='breadcrumb'>ESP8266</a>
+        <a href='#' class='breadcrumb'>Настройка порта GPIO%port%</a>
+      </div>
+    </div>
+ </nav>
+</div>
+<div class='row'>
+<div class='col s12 m6'>
+  <div class='card blue-grey darken-1'>
+    <div class='card-content white-text'>
+      <span class='card-title'>Настройка порта GPIO%port%</span>
+      <p><b>GPIO%port%: </b>%port_stat%</p>
+      <form method='get' action='cfgsaveport'>
+		  <input type='hidden' name='port' value='%port%'>
+		  <div class='input-field'>
+			<p>Тип порта</p>
+			<select class='browser-default' id='gpiotype' name='type' onchange='sel_change()'>
+				<option value='0' %type0opt%>Не Подключен</option>
+				<option value='1' %type1opt%>Вход</option>
+				<option value='2' %type2opt%>Выход</option>
+				<option value='3' %type3opt%>Цифровой Датчик</option>
+			</select>
+		  </div>
+		  <div class='input-field' id='action' style='display: none;'>
+		  <p>Действие</p>
+			<input name='action' value='%action%' length=32>
+		  </div>
+		  <div class='input-field' id='script' style='display: none;'>
+		  <p>Скрипт на сервере</p>
+			<input name='script' value='%script%'>
+		  </div>
+		  <div class='input-field' id='in_mode' style='display: none;'>
+			<p>Тип порта</p>
+			<select class='browser-default' name='in_mode'>
+				<option value='0' %inmode0opt%>Замыкание</option>
+				<option value='1' %inmode1opt%>Размыкание</option>
+				<option value='2' %inmode2opt%>И Замыкание, И Размыкание</option>
+			</select>
+		  </div>
+		  <div class='input-field' id='out_def' style='display: none;'>
+			<p>Состояние выхода при включении</p>
+			<select class='browser-default' name='out_def'>
+				<option value='0' %outdef0opt%>ВЫКЛ</option>
+				<option value='1' %outdef1opt%>ВКЛ</option>
+			</select>
+		  </div>
+		  <div class='input-field' id='out_def_pwm' style='display: none;'>
+		  <p>Состояние выхода при включении</p>
+			<input name='out_def_pwm' value='%out_def_pwm%' length=3>
+		  </div>
+		  <div class='input-field' id='out_mode' style='display: none;'>
+			<p>Тип выхода</p>
+			<select class='browser-default' id='out_mode_sel' name='out_mode' onchange='sel_om_change()'>
+				<option value='0' %outmode0opt%>Выключатель</option>
+				<option value='1' %outmode1opt%>ШИМ</option>
+			</select>
+		  </div>
+    </div>
+	<div class='card-action'>
+		<button class='waves-effect waves-teal btn' type='submit'>Сохранить</button>
+		</form>
+		<a class='waves-effect waves-teal btn' href='/'>Отмена</a>
+	</div>
+  </div>
+</div>
+</div>
+<script type='text/javascript'>
+	function sel_change() {
+	var val = document.getElementById('gpiotype').value;
+	if (val == 0) {
+		document.getElementById('action').style.display = 'none';
+		document.getElementById('script').style.display = 'none';
+		document.getElementById('in_mode').style.display = 'none';
+		document.getElementById('out_def').style.display = 'none';
+		document.getElementById('out_def_pwm').style.display = 'none';
+		document.getElementById('out_mode').style.display = 'none';
+	}
+	if (val == 1) {
+		document.getElementById('action').style.display = 'block';
+		document.getElementById('script').style.display = 'block';
+		document.getElementById('in_mode').style.display = 'block';
+		document.getElementById('out_def').style.display = 'none';
+		document.getElementById('out_def_pwm').style.display = 'none';
+		document.getElementById('out_mode').style.display = 'none';
+	}
+	if (val == 2) {
+		document.getElementById('action').style.display = 'none';
+		document.getElementById('script').style.display = 'none';
+		document.getElementById('in_mode').style.display = 'none';
+		document.getElementById('out_def').style.display = 'block';
+		document.getElementById('out_mode').style.display = 'block';
+		sel_om_change();
+	}
+}
+
+function sel_om_change() {
+	var val = document.getElementById('out_mode_sel').value;
+	if (val == 0) {
+		document.getElementById('out_def').style.display = 'block';
+		document.getElementById('out_def_pwm').style.display = 'none';
+	}
+	if (val == 1) {
+		document.getElementById('out_def_pwm').style.display = 'block';
+		document.getElementById('out_def').style.display = 'none';
+	}
+}
+sel_change();
+</script>	
+</body>
+</html>
