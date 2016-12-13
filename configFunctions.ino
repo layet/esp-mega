@@ -1,9 +1,11 @@
+// Функция удаления конфигурации контроллера
 bool clearConfig(){
     Debugln("clearConfig");
     configToClear = 0;
     return SPIFFS.remove("/config.json");  
 }
 
+// Функция загрузки конфигурации контроллера
 bool loadConfig(){
   Debugln("loadConfig()");
   File configFile = SPIFFS.open("/config.json", "r");
@@ -18,12 +20,8 @@ bool loadConfig(){
     return false;
   }
 
-  // Allocate a buffer to store contents of the file.
   std::unique_ptr<char[]> buf(new char[size]);
 
-  // We don't use String here because ArduinoJson library requires the input
-  // buffer to be mutable. If you don't use ArduinoJson, you may as well
-  // use configFile.readString instead.
   configFile.readBytes(buf.get(), size);
 
   StaticJsonBuffer<1000> jsonBuffer;
@@ -34,6 +32,7 @@ bool loadConfig(){
     return false;
   }
 
+  // Конфигурация контроллера
   String enameC = json["ename"];
   String esidC = json["esid"];
   String epassC = json["epass"];
@@ -41,6 +40,8 @@ bool loadConfig(){
   String mqttServerC = json["mqttServer"];
   String otaEnabledC = json["otaEnabled"];
   String mqttEnabledC = json["mqttEnabled"];
+  
+  // Конфигурация пинов
   String pin0typeC = json["p0type"];
   String pin0actionC = json["p0action"];
   String pin0scriptC = json["p0script"];
@@ -90,8 +91,6 @@ bool loadConfig(){
   String pin15outdefC = json["p15outdef"];
   String pin15outmodeC = json["p15outmode"];
 
-  // Real world application would store these values in some variables for
-  // later use.
   Opt.ename = enameC;
   Opt.esid = esidC;
   Opt.epass = epassC;
@@ -164,10 +163,13 @@ bool loadConfig(){
   return true;
 }
 
+// Функция сохранение конфигурации контроллера
 bool saveConfig() {
-  //Debugln("saveConfig()");
+  Debugln("saveConfig()");
   StaticJsonBuffer<1000> jsonBuffer;
   JsonObject& json = jsonBuffer.createObject();
+  
+  // Конфигурация контроллера
   json["ename"] = Opt.ename;
   json["esid"] = Opt.esid;
   json["epass"] = Opt.epass;
@@ -175,6 +177,8 @@ bool saveConfig() {
   json["mqttServer"] = Opt.mqttServer;
   json["otaEnabled"] = Opt.otaEnabled;
   json["mqttEnabled"] = Opt.mqttEnabled;
+  
+  // Конфигурация пинов
   json["p0type"] = Pin[0].type;
   json["p0action"] = Pin[0].action;
   json["p0script"] = Pin[0].script;
