@@ -11,12 +11,13 @@ boolean connectMQTT(){
 	Debugln(Opt.ename);
   
 	// Пытаемся соединиться с именем клиента из настроек (должно быть уникально)
-	if (mqttClient.connect((char*)Opt.ename.c_str())) {
+	if (mqttClient.connect((char*)Opt.ename.c_str(), (char*) String(Opt.pubTopic + "/alive").c_str(), 0, false, "0")) {
 		Debugln("Connected to MQTT broker");
 		// Подписываемся на входящие сообщения
 		if(mqttClient.subscribe((char*)String(Opt.pubTopic+"/#").c_str())){
 			Debugln("Subsribed to topic.");
 			// Отправляем информацию о контроллере
+      pubMQTT("/alive", "1");
 			pubMQTT("/class", OTAUPDATECLASS);
 			pubMQTT("/version", OTAUPDATEVERSION);
 			pubMQTT("/rssi", (char*) String(WiFi.RSSI()).c_str());

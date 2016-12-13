@@ -251,6 +251,14 @@ void launchWeb() {
 	server.on("/reboot", HTTP_GET, [](AsyncWebServerRequest *request){
 		ESP.reset();
 	});
+ server.on("/gpio", HTTP_GET, [](AsyncWebServerRequest *request){
+  // если не задан GET-параметр с номером порта - редирект на главную
+  int port;
+  if(request->hasParam("p")) port = request->getParam("p")->value().toInt(); else request->redirect("/");
+  String s = "";
+  if (port == 0) s = analogRead(A0); else s = digitalRead(port);
+  request->send(200, "text/html", s);
+  });
 	server.onNotFound(onRequest);
 	// Запускаем вебсервер
 	server.begin();       
